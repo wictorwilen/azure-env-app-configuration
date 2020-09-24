@@ -1,6 +1,6 @@
 {
   "name": "azure-env-app-configuration",
-  "version": "1.0.0",
+  "version": "1.2.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -9,7 +9,10 @@
   "author": "Wictor Wilén",
   "license": "MIT",
   "dependencies": {
-    "@azure/app-configuration": "^1.1.0"
+    "@azure/app-configuration": "^1.1.0",
+    "@azure/identity": "^1.1.0",
+    "@azure/keyvault-secrets": "^4.1.0",
+    "vscode-uri": "^2.1.2"
   },
   "devDependencies": {
     "rimraf": "^3.0.2",
