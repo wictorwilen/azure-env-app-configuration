@@ -87,6 +87,9 @@ export const envAppConfiguration = async (options: Options) => {
                 const uri = URI.parse(JSON.parse(setting.value.value).uri);
                 keyVaultValues.push({ key: setting.value.key, uri });
 
+            } if (options.includeKeyVaultSecrets === false &&
+                setting.value.contentType === "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8") {
+                    // nop - skip these
             } else {
                 process.env[setting.value.key] = setting.value.value;
             }
