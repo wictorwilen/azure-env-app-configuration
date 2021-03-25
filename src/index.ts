@@ -46,6 +46,12 @@ export declare type Options = {
      */
     includeKeyVaultSecrets?: boolean;
 
+    /**
+     * An array of environment variables/configuration names to ignore.
+     * @example ignore: ["debug"]
+     */
+    ignore?: string[];
+
 }
 
 /**
@@ -79,19 +85,22 @@ export const envAppConfiguration = async (options: Options) => {
     let setting = await settings.next();
     while (setting.done === false) {
         if (setting.value) {
-            if (options.includeKeyVaultSecrets === true &&
-                setting.value.contentType === "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8" &&
-                setting.value.value) {
-                // Key Vault settings are stored as uris
+            // check if this key should be ignored
+            if (!(options.ignore && options.ignore.indexOf(setting.value.key) !== -1)) {
+                if (options.includeKeyVaultSecrets === true &&
+                    setting.value.contentType === "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8" &&
+                    setting.value.value) {
+                    // Key Vault settings are stored as uris
 
-                const uri = URI.parse(JSON.parse(setting.value.value).uri);
-                keyVaultValues.push({ key: setting.value.key, uri });
+                    const uri = URI.parse(JSON.parse(setting.value.value).uri);
+                    keyVaultValues.push({ key: setting.value.key, uri });
 
-            } if (options.includeKeyVaultSecrets === false &&
-                setting.value.contentType === "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8") {
+                } if (options.includeKeyVaultSecrets === false &&
+                    setting.value.contentType === "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8") {
                     // nop - skip these
-            } else {
-                process.env[setting.value.key] = setting.value.value;
+                } else {
+                    process.env[setting.value.key] = setting.value.value;
+                }
             }
         }
         setting = await settings.next();
