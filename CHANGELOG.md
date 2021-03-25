@@ -8,7 +8,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- Added the `ignore` setting to `options` to exclude (already configured) settings from App Config
+- Added the `ignore` setting to `options` to exclude settings from App Config
+- Added the `ignoreIfDefined` setting to `options` to exclude (already configured) settings from App Config
 
 ## [1.3.0] - 2021-01-11
 

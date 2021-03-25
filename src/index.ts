@@ -52,6 +52,12 @@ export declare type Options = {
      */
     ignore?: string[];
 
+    /**
+    * An array of environment variables/configuration names to ignore if already defined in `process.env`
+    * @example ignoreIfDefined: ["debug"]
+    */
+    ignoreIfDefined?: string[];
+
 }
 
 /**
@@ -87,19 +93,22 @@ export const envAppConfiguration = async (options: Options) => {
         if (setting.value) {
             // check if this key should be ignored
             if (!(options.ignore && options.ignore.indexOf(setting.value.key) !== -1)) {
-                if (options.includeKeyVaultSecrets === true &&
-                    setting.value.contentType === "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8" &&
-                    setting.value.value) {
-                    // Key Vault settings are stored as uris
+                // check if this key should be ignored if already defined
+                if (!(options.ignoreIfDefined && options.ignoreIfDefined.indexOf(setting.value.key) !== -1 && process.env[setting.value.key])) {
+                    if (options.includeKeyVaultSecrets === true &&
+                        setting.value.contentType === "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8" &&
+                        setting.value.value) {
+                        // Key Vault settings are stored as uris
 
-                    const uri = URI.parse(JSON.parse(setting.value.value).uri);
-                    keyVaultValues.push({ key: setting.value.key, uri });
+                        const uri = URI.parse(JSON.parse(setting.value.value).uri);
+                        keyVaultValues.push({ key: setting.value.key, uri });
 
-                } if (options.includeKeyVaultSecrets === false &&
-                    setting.value.contentType === "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8") {
-                    // nop - skip these
-                } else {
-                    process.env[setting.value.key] = setting.value.value;
+                    } if (options.includeKeyVaultSecrets === false &&
+                        setting.value.contentType === "application/vnd.microsoft.appconfig.keyvaultref+json;charset=utf-8") {
+                        // nop - skip these
+                    } else {
+                        process.env[setting.value.key] = setting.value.value;
+                    }
                 }
             }
         }
