@@ -2,6 +2,20 @@
 
 **azure-env-app-configuration** is a utility library to the *Azure Application Configuration* service, and the *@azure/app-configuration* package, that allows you to easy import configurations into your node environment variables (`process.env`).
 
+## Options
+
+| Option | Description |
+|--------|-------------|
+|`appConfigConnectionString`*| Connection string to App Config |
+|`appConfigOptions` | Options for App Config |
+|`endpoint`* | Endpoint for App Config |
+|`tokenCredential`*| Credentials to use with `endpoint`|
+|`includeKeyVaultSecrets`| Also read connected Key Vault secrets|
+|`ignore` | An array of configuration names to ignore |
+|`ignoreIfDefined`| An array of configuration names to ignore, if already set|
+
+*) Either use `appConfigConnectionString` or `endpoint`/`tokenCredential`
+
 ## Example
 
 Simple configuration that imports all available configurations into `process.env`:
